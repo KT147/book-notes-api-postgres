@@ -48,38 +48,62 @@ app.get("/details", (req, res) => {
 
 app.post("/rate", async (req, res) => {
   try {
-    const title = req.body.title + "," + req.body.author;
+    const title = req.body.title
+    const author = req.body.author
     const description = req.body.description;
     const rating = req.body.rating;
     await db.query(
-      "INSERT INTO book_notes (name, description, rating) VALUES ($1, $2, $3)",
-      [title, description, rating]
+      "INSERT INTO book_notes (name, description, rating, author) VALUES ($1, $2, $3, $4)",
+      [title, description, rating, author]
     );
-    res.redirect("/");
+    res.redirect("/reviews");
   } catch (err) {
     console.log(err)
   }
 });
 
-app.get("/reviews", async (req,res) => {
-  const result = await db.query("SELECT * FROM book_notes")
-  const books = result.rows
-  res.render("reviews.ejs", {books});
-})
+app.get("/reviews", async (req, res) => {
+  const result = await db.query("SELECT * FROM book_notes ORDER BY name ASC");
+  const books = result.rows;
+
+  const booksWithCovers = await Promise.all(
+    books.map(async (book) => {
+      try {
+        const apiRes = await axios.get(
+          `https://openlibrary.org/search.json?title=${encodeURIComponent(book.name)}`
+        );
+        const cover_i = apiRes.data.docs[0]?.cover_i || null;
+        return { ...book, cover_i };
+      } catch {
+        return { ...book, cover_i: null };
+      }
+    })
+  );
+
+  res.render("reviews.ejs", { books: booksWithCovers });
+});
+
 
 app.get("/edit", async (req,res) => {
-  const id = req.body.key;
-  const book = await db.query("SELECT ($1) FROM book_notes", [id])
+  const id = req.query.key;
+  const result = await db.query("SELECT * FROM book_notes WHERE id = $1", [id]);
+  const book = result.rows[0]
   res.render("edit.ejs", {book})
 })
 
-// app.post("/edit", async (req,res) => {
-//   const id = req.body.key;
-//   const updatedDescription = req.body.description;
-//   const updatedRating = req.body.rating;
-//   await db.query("UPDATE book_notes SET description = ($1), rating = ($2) WHERE id = ($3)", [updatedDescription, updatedRating, id ])
-//   res.redirect("/reviews");
-// })
+app.post("/edit-review", async (req,res) => {
+  const id = req.body.key;
+  const updatedDescription = req.body.description;
+  const updatedRating = req.body.rating;
+  await db.query("UPDATE book_notes SET description = ($1), rating = ($2) WHERE id = ($3)", [updatedDescription, updatedRating, id ])
+  res.redirect("/reviews");
+})
+
+app.post("/delete", async (req,res) => {
+  const id = req.body.key;
+  await db.query("DELETE FROM book_notes WHERE id = ($1)", [id])
+  res.redirect("/reviews");
+})
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

@@ -1,17 +1,36 @@
 <%- include('partials/header.ejs'); -%>
+<style>
+  img {
+    width: 120px;
+    height: 180px;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+</style>
 <body>
-    <ul>
-        <% books.forEach(book => {%>
-        <li>
-          <form action="/edit" method="get">
-            <input type="hidden" name="key" value="<%= book.id %>" />
-            <span type="submit"><%= book.name %></span>
-            <br>
-            <span type="submit"><%= book.description %></span>
-            <button>Edit</button>
-            <br><br>
-          </form>
-        </li>
-        <% }) %>
-      </ul>
+  <ul>
+    <% books.forEach(book => {%>
+    <li>
+      <form action="/edit" method="GET">
+        <img src="<%= book.cover_i ? 'https://covers.openlibrary.org/b/id/' + book.cover_i + '-M.jpg' : '/images/no-cover.png' %>" />
+        <br>
+        <input type="hidden" name="key" value="<%= book.id %>" />
+        <span><%= book.name %></span>
+        <br>
+        <span><%= book.author %></span>
+        <br />
+        <span><i>My comment: </i><%= book.description %></span>
+        <br />
+        <span>Rating: <%= book.rating %> /5</span>
+        <button>Edit</button>
+        <br /><br />
+      </form>
+    </li>
+    <% }) %>
+  </ul>
 </body>

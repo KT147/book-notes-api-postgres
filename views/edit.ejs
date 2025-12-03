@@ -1,14 +1,47 @@
 <%- include('partials/header.ejs'); -%>
 <body>
-  <form action="/edit" method="get">
+  <form action="/edit-review" method="POST">
     <input type="hidden" name="key" value="<%= book.id %>" />
     <span type="submit"><%= book.name %></span>
-    <br />
-    <label for=""> Description</label>
-    <input type="text" name="description" value="<%= book.description %>" />
-    <label for=""> Rating</label>
-    <input type="text" name="rating" value="<%= book.rating %>" />
+    <br /> <br>
+    <label for=""> Description:</label>
+    <br>
+    <textarea type="text" name="description"><%= book.description %></textarea>
+    <br><br>
+    <div name="rating" class="rating" >
+      <span class="star" data-value="1">★</span>
+      <span class="star" data-value="2">★</span>
+      <span class="star" data-value="3">★</span>
+      <span class="star" data-value="4">★</span>
+      <span class="star" data-value="5">★</span>
+    </div>
+    <input type="hidden" name="rating" id="rating-value" value="<%= book.rating %>" />
     <button>Edit</button>
     <br /><br />
   </form>
+  <form action="/delete" method="POST">
+    <input type="hidden" name="key" value="<%= book.id %>" />
+    <button>Delete</button>
+  </form>
 </body>
+<script>
+  const stars = document.querySelectorAll(".rating .star");
+  const ratingInput = document.getElementById("rating-value");
+  let selectedRating = parseInt(ratingInput.value) || 0;
+
+  updateStars(selectedRating)
+
+  stars.forEach((star) => {
+    star.addEventListener("click", () => {
+      selectedRating = parseInt(star.dataset.value);
+      ratingInput.value = selectedRating;
+      updateStars(selectedRating);
+    });
+  });
+
+  function updateStars(rating) {
+    stars.forEach((star, i) => {
+      star.style.color = i < rating ? "gold" : "gray";
+    });
+  }
+</script>
