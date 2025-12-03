@@ -1,24 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/index.css" />
-    <title>Book Notes</title>
-  </head>
+<%- include('partials/header.ejs'); -%>
   <body>
     <form action="/search" method="post">
       <label for="">Search for a book:</label>
       <input type="text" name="searchedBook" />
       <button>Search</button>
     </form>
-    
-    <form action="/details" method="get">
-      <ul>
-        <% books.forEach(book => {%>
-        <li><button><%= book.title %></button></li>
-        <% }) %>
-      </ul>
-    </form>
+
+    <ul>
+      <% books.forEach(book => {%>
+      <li>
+        <form action="/details" method="get">
+          <input type="hidden" name="key" value="<%= book.key %>" />
+          <button type="submit"><%= book.title %></button>
+        </form>
+      </li>
+      <% }) %>
+    </ul>
   </body>
 </html>

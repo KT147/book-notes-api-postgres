@@ -1,0 +1,14 @@
+<%- include('partials/header.ejs'); -%>
+<body>
+  <form action="/edit" method="get">
+    <input type="hidden" name="key" value="<%= book.id %>" />
+    <span type="submit"><%= book.name %></span>
+    <br />
+    <label for=""> Description</label>
+    <input type="text" name="description" value="<%= book.description %>" />
+    <label for=""> Rating</label>
+    <input type="text" name="rating" value="<%= book.rating %>" />
+    <button>Edit</button>
+    <br /><br />
+  </form>
+</body>

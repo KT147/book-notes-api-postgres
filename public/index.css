@@ -1,5 +1,37 @@
 body {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navbar {
+  background-color :darkturquoise; 
+  width: 100%;
+  height: 30px;
+  display: flex;
+  gap: 50px;
+}
+
+.star {
+  font-size: 30px;
+  cursor: pointer;
+  color: gray;
+}
+
+input[readonly] {
+  border: none;
+  background: transparent;
+  font-size: 1em;
+  color: black;
+  text-align: center; 
+}
+
+input[readonly]:focus {
+  outline: none;
+  border: none;
+}
+
+.books-list{
   display: flex;
   flex-direction: column;
   align-items: center;

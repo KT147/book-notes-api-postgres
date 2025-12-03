@@ -1,0 +1,17 @@
+<%- include('partials/header.ejs'); -%>
+<body>
+    <ul>
+        <% books.forEach(book => {%>
+        <li>
+          <form action="/edit" method="get">
+            <input type="hidden" name="key" value="<%= book.id %>" />
+            <span type="submit"><%= book.name %></span>
+            <br>
+            <span type="submit"><%= book.description %></span>
+            <button>Edit</button>
+            <br><br>
+          </form>
+        </li>
+        <% }) %>
+      </ul>
+</body>

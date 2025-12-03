@@ -1,15 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/index.css">
-</head>
-<body>
-    <ul>
-        <% currentBooks.forEach(book => {%>
-        <li><button><%= book.title %></button></li>
-        <% }) %>
-      </ul>
-</body>
+<%- include('partials/header.ejs'); -%>
+  <body>
+    <form action="/rate" method="post">
+      <div class="books-list">
+        <label for="">Title:</label>
+        <input readonly name="title" value="<%= book.title %>" /> <br />
+        <label for="">Author:</label>
+        <input readonly name="author" value="<%= book.author_name %>" />
+
+        <br />
+        <img
+          src="https://covers.openlibrary.org/b/id/<%= book.cover_i %>-M.jpg"
+          alt="<%= book.title %> cover"
+        />
+        <br />
+        <label for="">Add a Review</label>
+        <br />
+        <textarea name="description" id=""></textarea>
+        <br />
+        <div name="rating" class="rating">
+          <span class="star" data-value="1">★</span>
+          <span class="star" data-value="2">★</span>
+          <span class="star" data-value="3">★</span>
+          <span class="star" data-value="4">★</span>
+          <span class="star" data-value="5">★</span>
+        </div>
+        <input type="hidden" name="rating" id="rating-value" value="0" />
+        <button type="submit">Add a review</button>
+      </div>
+    </form>
+  </body>
+  <script>
+    const stars = document.querySelectorAll(".rating .star");
+    const ratingInput = document.getElementById("rating-value");
+    let selectedRating = 0;
+
+    stars.forEach((star) => {
+      star.addEventListener("click", () => {
+        selectedRating = parseInt(star.dataset.value);
+        ratingInput.value = selectedRating;
+        updateStars(selectedRating);
+      });
+    });
+
+    function updateStars(rating) {
+      stars.forEach((star, i) => {
+        star.style.color = i < rating ? "gold" : "gray";
+      });
+    }
+  </script>
 </html>
